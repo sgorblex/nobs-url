@@ -1,6 +1,8 @@
 package lib
 
-func rmGet()
+func RmGet(url string) string {
+	return url
+}
 
 func Cleanup(url string) string {
 	// e.g. remove GET parameters
