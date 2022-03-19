@@ -1,16 +1,54 @@
 package lib
 
-func RmGet(url string) string {
-	return url
+import (
+	urllib "net/url"
+	"regexp"
+	"strings"
+)
+
+func parseGet(url string) []string {
+	beginGet := strings.Index(url, "?")
+	if beginGet == -1 {
+		return []string{}
+	}
+	res := []string{}
+	remaining := url[beginGet:]
+	for {
+		remaining = remaining[1:]
+		endParam := strings.Index(remaining, "&")
+		if endParam == -1 {
+			res = append(res, remaining)
+			break
+		}
+		res = append(res, remaining[:endParam])
+		remaining = remaining[endParam:]
+	}
+	return res
 }
 
-func Cleanup(url string) string {
-	// e.g. remove GET parameters
-	// return url.rmget()
-	return url
+func rmAllGet(url string) string {
+	return regexp.MustCompile("\\?.*").ReplaceAllString(url, "")
+}
+
+func Cleanup(url string) (string, bool) {
+	cleanups := getMap()
+	for re, f := range cleanups {
+		actualRe, err := regexp.Compile(re)
+		if err != nil {
+			return "", false
+		}
+		if actualRe.MatchString(url) {
+			newUrl, ok := f(url)
+			if !ok {
+				return "", false
+			}
+			url = newUrl
+		}
+	}
+	return url, true
 }
 
 func IsURL(urlCandidate string) bool {
-	// if it is an actual URL // TODO
-	return true
+	_, err := urllib.ParseRequestURI(urlCandidate)
+	return err == nil
 }

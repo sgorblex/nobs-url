@@ -17,5 +17,10 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Insert URL as argument")
 		os.Exit(1)
 	}
-	fmt.Println(Cleanup(url))
+	clean, ok := Cleanup(url)
+	if !ok {
+		fmt.Fprintln(os.Stderr, "ERROR")
+		os.Exit(1)
+	}
+	fmt.Println(clean)
 }
