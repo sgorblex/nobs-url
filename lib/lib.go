@@ -31,8 +31,7 @@ func rmAllGet(url string) string {
 }
 
 func Cleanup(url string) (string, bool) {
-	cleanups := getMap()
-	for re, f := range cleanups {
+	for re, f := range Cleanups {
 		actualRe, err := regexp.Compile(re)
 		if err != nil {
 			return "", false

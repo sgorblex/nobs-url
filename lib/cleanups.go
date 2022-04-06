@@ -5,17 +5,16 @@ import (
 	"strings"
 )
 
-func getMap() map[string]func(string) (string, bool) {
-	var res = make(map[string]func(string) (string, bool))
-	res["https://www.amazon.it/.*/dp/.*/.*"] = func(url string) (string, bool) {
+var Cleanups = map[string]func(string) (string, bool){
+	"https://www.amazon.it/.*/dp/.*/.*": func(url string) (string, bool) {
 		re := regexp.MustCompile("https://www.amazon.it/.*/dp/(.*?)/.*")
 		code := re.FindStringSubmatch(url)[1]
 		return "https://www.amazon.it/dp/" + code, true
-	}
-	res["https://open.spotify.com/track/.*"] = func(url string) (string, bool) {
+	},
+	"https://open.spotify.com/track/.*": func(url string) (string, bool) {
 		return rmAllGet(url), true
-	}
-	res["https://www.reddit.com/r/.*/comments/.*/"] = func(url string) (string, bool) {
+	},
+	"https://www.reddit.com/r/.*/comments/.*/": func(url string) (string, bool) {
 		var re *regexp.Regexp
 		if strings.Contains(url, "/comment/") {
 			re = regexp.MustCompile("https://www.reddit.com/r/.*?/comments/.*/comment/.*?/")
@@ -24,6 +23,5 @@ func getMap() map[string]func(string) (string, bool) {
 		}
 		out := re.FindString(url)
 		return out[:len(out)-1], true
-	}
-	return res
+	},
 }
