@@ -1,6 +1,9 @@
 package lib
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 func getMap() map[string]func(string) (string, bool) {
 	var res = make(map[string]func(string) (string, bool))
@@ -13,7 +16,12 @@ func getMap() map[string]func(string) (string, bool) {
 		return rmAllGet(url), true
 	}
 	res["https://www.reddit.com/r/.*/comments/.*/"] = func(url string) (string, bool) {
-		re := regexp.MustCompile("https://www.reddit.com/r/.*/comments/.*?/")
+		var re *regexp.Regexp
+		if strings.Contains(url, "/comment/") {
+			re = regexp.MustCompile("https://www.reddit.com/r/.*?/comments/.*/comment/.*?/")
+		} else {
+			re = regexp.MustCompile("https://www.reddit.com/r/.*?/comments/.*?/")
+		}
 		out := re.FindString(url)
 		return out[:len(out)-1], true
 	}
