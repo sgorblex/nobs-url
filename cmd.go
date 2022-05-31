@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	. "github.com/sgorblex/nobs-url/lib"
 	"os"
+
+	. "github.com/sgorblex/nobs-url/lib"
 )
 
 func main() {
@@ -17,10 +18,9 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Insert URL as argument")
 		os.Exit(1)
 	}
-	clean, ok := Cleanup(url)
-	if !ok {
-		fmt.Fprintln(os.Stderr, "ERROR")
-		os.Exit(1)
-	}
+	clean, matched := Cleanup(url)
 	fmt.Println(clean)
+	if !matched {
+		fmt.Fprintln(os.Stderr, "(unmatched)")
+	}
 }
